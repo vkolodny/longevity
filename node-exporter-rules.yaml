@@ -266,6 +266,15 @@ spec:
       for: 15m
       labels:
         severity: critical
+    - alert: NodeMemoryAlertVlad       
+       annotations:
+        description: Memory utilization on Node {{ $labels.instance }} is currently
+          at {{ printf "%.2f" $value * 100 }}%.
+        summary: You are using a lot of memory
+      expr: |
+        (
+          instance:node_memory_utilisation:ratio{job="node-exporter"} > 0.1
+        )                  
   - name: node-exporter.rules
     rules:
     - expr: |
