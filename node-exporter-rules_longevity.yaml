@@ -1,0 +1,29 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations:
+  labels:
+    app.kubernetes.io/component: exporter
+    app.kubernetes.io/name: node-exporter
+    app.kubernetes.io/part-of: openshift-monitoring
+    app.kubernetes.io/version: 1.4.0
+    prometheus: k8s
+    role: alert-rules
+  name: node-exporter-rules-vlad
+  namespace: openshift-monitoring
+spec:
+  groups:
+  - name: node-exporter
+    rules:
+    - alert: NodeMemoryAlertVlad       
+      annotations:
+        description: Memory utilization on Node {{ $labels.instance }} is currently
+          at {{ printf "%.2f" $value }}%.
+        summary: You are using a lot of memory
+      expr: |
+        (
+          (instance:node_memory_utilisation:ratio{job="node-exporter"} * 100) > 10
+        )
+      for: 1m
+      labels:
+        severity: critical  
