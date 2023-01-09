@@ -15,7 +15,7 @@ spec:
   groups:
   - name: node-exporter
     rules:
-    - alert: NodeMemoryAlertVlad       
+    - alert: NodeMemoryAlertLongevity
       annotations:
         description: Memory utilization on Node {{ $labels.instance }} is currently
           at {{ printf "%.2f" $value }}%.
@@ -26,4 +26,18 @@ spec:
         )
       for: 1m
       labels:
-        severity: critical  
+        severity: critical
+  groups:
+  - name: openshift-general.rules
+    rules:
+    - alert: DroppedRequestsForKubeApiLongevity
+      annotations:
+        description: There are dropped requests for kube-apiserver. Please check the system status.
+        summary: There are dropped requests for kube-apiserver.
+      expr: |
+        (
+          sum(rate(apiserver_dropped_requests_total{apiserver="kube-apiserver"}[5m])) by (request_kind) > 0
+        )
+      for: 1m
+      labels:
+        severity: critical
