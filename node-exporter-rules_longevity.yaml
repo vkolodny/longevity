@@ -33,7 +33,7 @@ spec:
     - alert: DroppedRequestsForKubeApiLongevity
       annotations:
         description: There are dropped requests for kube-apiserver. Please check the system status.
-        summary: There are dropped requests for kube-apiserver.
+        summary: There are dropped requests for the kube-apiserver.
       expr: |
         (
           sum(rate(apiserver_dropped_requests_total{apiserver="kube-apiserver"}[5m])) by (request_kind) > 0
