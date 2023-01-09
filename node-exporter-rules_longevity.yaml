@@ -13,7 +13,7 @@ metadata:
   namespace: openshift-monitoring
 spec:
   groups:
-  - name: node-exporter
+  - name: longevity
     rules:
     - alert: NodeMemoryAlertLongevity
       annotations:
@@ -27,9 +27,7 @@ spec:
       for: 1m
       labels:
         severity: critical
-  groups:
-  - name: openshift-general.rules
-    rules:
+
     - alert: DroppedRequestsForKubeApiLongevity
       annotations:
         description: There are dropped requests for kube-apiserver. Please check the system status.
