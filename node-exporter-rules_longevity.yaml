@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/version: 1.4.0
     prometheus: k8s
     role: alert-rules
-  name: node-exporter-rules-vlad
+  name: node-exporter-rules-longevity
   namespace: openshift-monitoring
 spec:
   groups:
@@ -55,8 +55,8 @@ spec:
     - alert: PodPossibleMemoryLeak_Longevity
       annotations:
         description: Min memory usage of pod {{ $labels.pod }} increased
-          by {{ printf "%.2f" $value }}%.
-        summary: Please check for memory leak.
+          by {{ printf "%.2f" $value }}% over 1 week.
+        summary: Please check for the memory leak.
       expr: |
         (
           (sum(min_over_time(container_memory_working_set_bytes{namespace=~"multicluster-engine|openshift-machine-api",pod=~".*assisted.*|.*metal.*",container!="POD"}[12h] ) )by(pod) /  sum(min_over_time(container_memory_working_set_bytes{namespace=~"multicluster-engine|openshift-machine-api",pod=~".*assisted.*|.*metal.*",container!="POD"}[12h] offset 1w ) )by(pod) - 1) * 100
