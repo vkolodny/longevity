@@ -22,7 +22,7 @@ spec:
         summary: You are using a lot of memory
       expr: |
         (
-          (instance:node_memory_utilisation:ratio{job="node-exporter"} * 100) > 10
+          (instance:node_memory_utilisation:ratio{job="node-exporter"} * 100) > 60
         )
       for: 1m
       labels:
