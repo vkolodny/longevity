@@ -28,6 +28,44 @@ spec:
       labels:
         severity: critical
 
+    - alert: HighCPU_Longevity
+      annotations:
+        description: CPU utilization on Node {{ $labels.instance }} is currently
+          at {{ printf "%.2f" $value }}%.
+        summary: CPU utilization is high for more than 5 min
+      expr: |
+        (
+          100 - (100 * avg(irate(node_cpu_seconds_total{mode="idle"}[1m])) by (instance)) > 50
+        )
+      for: 5m
+      labels:
+        severity: critical
+
+    - alert: FSFullPredict_Longevity
+      annotations:
+        description: FS mountpoint {{ $labels.mountpoint }} on {{ $labels.instance }} will be full in 3 days.
+        summary: FS will be full in 3 days.
+      expr: |
+        (
+          predict_linear(node_filesystem_free_bytes[1h], 72 * 3600) < 0
+        )
+      for: 5m
+      labels:
+        severity: critical
+
+    - alert: RootFS_Longevity
+      annotations:
+        description: Root FS on Node {{ $labels.instance }} is
+          at {{ printf "%.2f" $value }}%.
+        summary: Root FS is more than 50%
+      expr: |
+        (
+          100 - ((node_filesystem_avail_bytes{mountpoint="/"}/node_filesystem_size_bytes{mountpoint="/"}) * 100 ) > 50
+        )
+      for: 5m
+      labels:
+        severity: critical
+
     - alert: DroppedRequestsForKubeApi_Longevity
       annotations:
         description: There are dropped requests for kube-apiserver. Please check the system status.
